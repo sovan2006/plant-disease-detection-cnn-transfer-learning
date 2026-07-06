@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Plant Disease Detection</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f8f4;
+    color:#333;
+}
+
+header{
+    background:#2E7D32;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 60px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+.logo{
+    font-size:28px;
+    font-weight:700;
+}
+
+.developer{
+    font-size:16px;
+}
+
+.hero{
+    text-align:center;
+    padding:50px 20px;
+}
+
+.hero h1{
+    font-size:40px;
+    color:#2E7D32;
+}
+
+.hero p{
+    margin-top:15px;
+    font-size:18px;
+    color:#666;
+}
+
+.upload-section{
+    display:flex;
+    justify-content:center;
+    gap:40px;
+    flex-wrap:wrap;
+    margin:40px;
+}
+
+.upload-card,
+.preview-card{
+    width:420px;
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.upload-card h2,
+.preview-card h2{
+    margin-bottom:25px;
+    color:#2E7D32;
+    text-align:center;
+}
+
+input[type=file]{
+    display:none;
+}
+
+.upload-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    background:#43A047;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+    font-size:18px;
+}
+
+.upload-btn:hover{
+    background:#2E7D32;
+}
+
+.predict-btn{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#1B5E20;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.predict-btn:hover{
+    background:#388E3C;
+}
+
+.predict-btn:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+}
+
+.preview-card img{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+    border-radius:10px;
+    border:2px dashed #ddd;
+}
+
+.prediction-section{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    margin:50px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card i{
+    font-size:40px;
+    color:#2E7D32;
+    margin-bottom:15px;
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#666;
+    font-size:17px;
+}
+
+.performance{
+    margin:50px;
+}
+
+.performance h2{
+    text-align:center;
+    margin-bottom:30px;
+    color:#2E7D32;
+}
+
+.performance-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.performance-card{
+    background:white;
+    border-radius:15px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.performance-card span{
+    display:block;
+    margin-top:20px;
+    color:#2E7D32;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.dataset{
+    margin:50px;
+}
+
+.dataset h2{
+    text-align:center;
+    color:#2E7D32;
+    margin-bottom:30px;
+}
+
+.dataset-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.dataset-card{
+    background:white;
+    text-align:center;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.dataset-card h3{
+    color:#2E7D32;
+    margin-bottom:15px;
+}
+
+.dataset-card p{
+    font-size:20px;
+}
+
+footer{
+    margin-top:50px;
+    background:#2E7D32;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+@media(max-width:768px){
+
+header{
+    flex-direction:column;
+    gap:15px;
+    text-align:center;
+    padding:20px;
+}
+
+.hero h1{
+    font-size:30px;
+}
+
+.upload-section{
+    margin:20px;
+}
+
+.prediction-section{
+    margin:20px;
+}
+
+.performance{
+    margin:20px;
+}
+
+.dataset{
+    margin:20px;
+}
+
+}
+</style>
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <div class="logo">
+            🌿 Plant Disease Detection
+        </div>
+
+        <div class="developer">
+            Developed by <strong>Sovan Barik</strong>
+        </div>
+
+    </header>
+
+    <!-- ================= MAIN ================= -->
+
+    <main>
+
+        <section class="hero">
+            <h1>AI Powered Plant Disease Detection</h1>
+            <p>Detect plant diseases using CNN and EfficientNetB0</p>
+        </section>
+
+        <!-- ================= Upload Section ================= -->
+
+        <section class="upload-section">
+
+            <div class="upload-card">
+
+                <h2>Upload Leaf Image</h2>
+
+                <form action="{{ url_for('predict') }}"
+                    method="POST"
+                    enctype="multipart/form-data">
+
+                    <input
+                        type="file"
+                        name="file"
+                        id="imageUpload"
+                        accept="image/*"
+                        required>
+
+                    <label for="imageUpload" class="upload-btn">
+                        <i class="fa-solid fa-upload"></i>
+                        Choose Image
+                    </label>
+
+                    <button type="submit" class="predict-btn">
+                        Predict Disease
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- Image Preview -->
+
+            <div class="preview-card">
+
+                <h2>Uploaded Image</h2>
+
+                <img
+                    id="previewImage"
+                    src="{{ image_path if image_path else url_for('static', filename='images/upload.png') }}"
+                    alt="Preview">
+
+            </div>
+
+        </section>
+
+        <!-- ================= Prediction ================= -->
+
+        <section class="prediction-section">
+
+            <div class="card">
+                <i class="fa-solid fa-virus"></i>
+                <h3>Disease</h3>
+                <p>{{ disease if disease else "Waiting for Prediction" }}</p>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-chart-line"></i>
+                <h3>Confidence</h3>
+                <p>{{ confidence if confidence else "--" }}</p>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-leaf"></i>
+                <h3>Recommendation</h3>
+                <p>{{ recommendation if recommendation else "Upload an image to get recommendation." }}</p>
+            </div>
+
+        </section>
+
+        <!-- ================= Model Performance ================= -->
+
+        <section class="performance">
+
+            <h2>Model Performance</h2>
+
+            <div class="performance-grid">
+
+                <div class="performance-card">
+                    <h3>CNN Accuracy</h3>
+                    <span>92.4%</span>
+                </div>
+
+                <div class="performance-card">
+                    <h3>EfficientNetB0 Accuracy</h3>
+                    <span>95.7%</span>
+                </div>
+
+                <div class="performance-card">
+                    <h3>Best Model</h3>
+                    <span>EfficientNetB0</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= Dataset ================= -->
+
+        <section class="dataset">
+
+            <h2>Dataset Information</h2>
+
+            <div class="dataset-grid">
+
+                <div class="dataset-card">
+                    <h3>Dataset</h3>
+                    <p>PlantVillage</p>
+                </div>
+
+                <div class="dataset-card">
+                    <h3>Classes</h3>
+                    <p>38</p>
+                </div>
+
+                <div class="dataset-card">
+                    <h3>Images</h3>
+                    <p>54,305</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ================= Footer ================= -->
+
+    <footer>
+        <p>
+            © 2026 Plant Disease Detection |
+            CNN + EfficientNetB0 |
+            Developed by Sovan Barik
+        </p>
+    </footer>
+
+    <!-- JavaScript -->
+
+    <script>
+        // ==============================
+        // Image Preview
+        // ==============================
+
+        const imageUpload = document.getElementById("imageUpload");
+        const previewImage = document.getElementById("previewImage");
+
+        imageUpload.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (!file) return;
+
+            const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+            if (!allowedTypes.includes(file.type)) {
+                alert("Please upload JPG or PNG image.");
+                imageUpload.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                previewImage.src = event.target.result;
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+        // ==============================
+        // Predict Button Loading
+        // ==============================
+
+        const form = document.querySelector("form");
+        const predictButton = document.querySelector(".predict-btn");
+
+        form.addEventListener("submit", function () {
+            predictButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Predicting...';
+            predictButton.disabled = true;
+        });
+
+        // ==============================
+        // Card Hover Animation
+        // ==============================
+
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach(card => {
+            card.addEventListener("mouseenter", () => {
+                card.style.transform = "translateY(-8px)";
+            });
+
+            card.addEventListener("mouseleave", () => {
+                card.style.transform = "translateY(0px)";
+            });
+        });
+
+        // ==============================
+        // Reset Preview if Needed
+        // ==============================
+
+        function resetPreview() {
+            previewImage.src = "{{ url_for('static', filename='images/upload.png') }}";
+            imageUpload.value = "";
+        }
+
+        // ==============================
+        // Image Drag & Drop
+        // ==============================
+
+        const uploadCard = document.querySelector(".upload-card");
+
+        uploadCard.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            uploadCard.style.border = "2px dashed #2E7D32";
+        });
+
+        uploadCard.addEventListener("dragleave", () => {
+            uploadCard.style.border = "none";
+        });
+
+        uploadCard.addEventListener("drop", (e) => {
+            e.preventDefault();
+            uploadCard.style.border = "none";
+
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+
+            imageUpload.files = e.dataTransfer.files;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                previewImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+
+</body>
+
+</html>
