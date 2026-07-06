@@ -20,7 +20,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # Model Path
 # =====================================================
 
-MODEL_PATH = "best_plant_disease_model.keras"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "best_plant_disease_model.keras")
 
 # =====================================================
 # Load Model
